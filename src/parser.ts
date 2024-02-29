@@ -36,8 +36,11 @@ export function getSymbolTree(code: string): DocumentSymbol[] {
         }
       },
       JSXFragment(path) {
-        nodes.push(path.node);
-        path.stop();
+        const fullPath = path.getPathLocation()
+        if (!skipPaths.some(skipPath => fullPath.startsWith(skipPath))) {
+          nodes.push(path.node);
+          skipPaths.push(fullPath)
+        }
       }
     });
     const symbols = parseDocumentSymbols(nodes);
