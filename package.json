@@ -1,20 +1,16 @@
 {
-  "name": "react-outline",
-  "displayName": "React Outline",
-  "description": "A simple extension that shows the symbols and outlines for a React file.",
-  "version": "1.0.9",
-  "publisher": "ShubhamVerma18",
+  "name": "bbl-react-outline",
+  "displayName": "BBL React Outline",
+  "description": "A simple extension that shows the symbols and outlines for a React file. Fork of https://github.com/ShubhamVerma1811/vscode-react-outline",
+  "version": "0.0.1",
+  "publisher": "hxdyj",
   "preview": true,
-  "author": {
-    "name": "Shubham Verma",
-    "url": "https://shbm.fyi"
-  },
   "icon": "public/assets/icon.png",
   "repository": {
     "type": "git",
-    "url": "https://github.com/ShubhamVerma1811/vscode-react-outline"
+    "url": "https://github.com/hxdyj/vscode-react-outline.git"
   },
-  "homepage": "https://github.com/ShubhamVerma1811/vscode-react-outline",
+  "homepage": "https://github.com/hxdyj/vscode-react-outline",
   "engines": {
     "vscode": "^1.62.0"
   },
@@ -39,21 +35,22 @@
     "format": "prettier --write src/**/*.{ts,tsx}"
   },
   "devDependencies": {
-    "@types/babel__traverse": "^7.14.2",
-    "@types/eslint": "^8.2.1",
+    "@types/babel__traverse": "^7.20.5",
+    "@types/eslint": "^8.56.5",
+    "@types/estree": "^1.0.5",
     "@types/glob": "^7.1.4",
     "@types/mocha": "^9.0.0",
     "@types/node": "14.x",
     "@types/vscode": "^1.62.0",
-    "@typescript-eslint/eslint-plugin": "^5.1.0",
-    "@typescript-eslint/parser": "^5.1.0",
-    "eslint": "^8.1.0",
+    "@typescript-eslint/eslint-plugin": "^7.1.0",
+    "@typescript-eslint/parser": "^7.1.0",
+    "eslint": "^8.57.0",
     "glob": "^7.1.7",
     "prettier": "^2.5.1",
     "typescript": "^4.4.4"
   },
   "dependencies": {
-    "@babel/parser": "^7.16.4",
-    "@babel/traverse": "^7.16.3"
+    "@babel/parser": "^7.24.0",
+    "@babel/traverse": "^7.24.0"
   }
 }

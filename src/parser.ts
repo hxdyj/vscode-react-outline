@@ -22,22 +22,24 @@ type Node =
 export function getSymbolTree(code: string): DocumentSymbol[] {
   try {
     const nodes: Node[] = [];
+    const skipPaths: string[] = [];
     const ast = parse(code, {
       sourceType: "module",
       plugins: ["jsx", "typescript"]
     });
-
     traverse(ast, {
       JSXElement(path) {
-        nodes.push(path.node);
-        path.stop();
+        const fullPath = path.getPathLocation()
+        if (!skipPaths.some(skipPath => fullPath.startsWith(skipPath))) {
+          nodes.push(path.node);
+          skipPaths.push(fullPath)
+        }
       },
       JSXFragment(path) {
         nodes.push(path.node);
         path.stop();
       }
     });
-
     const symbols = parseDocumentSymbols(nodes);
     return symbols;
   } catch (err) {
