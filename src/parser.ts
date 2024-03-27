@@ -102,6 +102,8 @@ function parseJSXElement(node: JSXElement) {
     getRange(node.loc)
   );
   const childs = parseChildren(children);
+  const attributes = parseAttributes(node);
+  attributes && symbol.children.push(...attributes);
   childs && symbol.children.push(...childs);
   return symbol;
 }
@@ -189,6 +191,25 @@ function parseChildren(children) {
   }
   return childs;
 }
+// @ts-ignore
+function parseAttributes(node) {
+  const childs = [];
+  const attributes = node.openingElement.attributes;
+  for (const attr of attributes) {
+    if (attr.type === "JSXAttribute" && attr.value.type === "JSXExpressionContainer") {
+      if (attr.value.expression.type === "JSXElement") {
+        const res = parseNode(attr.value.expression);
+        res && childs.push(res);
+      }
+      // if (attr.value.expression.type === "ArrowFunctionExpression" || attr.value.expression.type === "FunctionExpression") {
+      //   const res = parseCallExpression(attr.value.expression)
+      //   res && childs.push(res);
+      // }
+    }
+  }
+  return childs;
+}
+
 
 function getRange(loc: SourceLocation) {
   if (!loc) {
