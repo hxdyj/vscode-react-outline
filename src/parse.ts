@@ -48,8 +48,13 @@ export class Parse {
     }
 
     private traverse() {
-        // @ts-ignore
-        traverse(this.ast, this.vistor());
+        try {
+            // @ts-ignore
+            traverse(this.ast, this.vistor());
+        } catch (err) {
+            console.error('traverse error', err);
+            throw err
+        }
     }
 
     private getInStackLast(): undefined | StackItem {
@@ -68,8 +73,19 @@ export class Parse {
                 if (this.getInStackLast()?.node === path.node) {
                     const popItem = this.inStack.pop()
                     if (popItem) {
-                        // @ts-ignore
-                        const name = popItem.node.type === 'JSXElement' ? popItem.node.openingElement.name?.name : '<>'
+                        let name = ''
+                        // @ts-ignore 
+                        if (popItem.node.openingElement?.name && popItem.node.openingElement.name.type === 'JSXMemberExpression') {
+                            // @ts-ignore 
+                            name = popItem.node.openingElement.name.object.name + '.' + popItem.node.openingElement.name.property.name
+                        } else {
+                            if (popItem.node.type === 'JSXFragment') {
+                                name = '<></>'
+                            } else {
+                                // @ts-ignore 
+                                name = popItem.node.openingElement.name.name
+                            }
+                        }
                         popItem.documentSymbol = this.generateDocumentSymbol(name, '', SymbolKind.Variable, this.getRange(popItem.node.loc!))
                         popItem.documentSymbol.children = []
                     }
