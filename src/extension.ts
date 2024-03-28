@@ -1,6 +1,5 @@
 import * as vscode from "vscode";
-import { getSymbolTree } from "./parser";
-
+import { Parse } from './parse'
 export function activate(ctx: vscode.ExtensionContext): void {
   showNewVersionMessage(ctx);
   ctx.subscriptions.push(
@@ -20,41 +19,39 @@ export function deactivate() { }
 class ReactDocumentSymbolProvider implements vscode.DocumentSymbolProvider {
   public provideDocumentSymbols(
     document: vscode.TextDocument,
-    token: vscode.CancellationToken
   ): Thenable<vscode.DocumentSymbol[]> {
-    return new Promise((resolve, reject) => {
-      const symbols = getSymbolTree(document.getText());
+    return new Promise((resolve) => {
+      const parse = new Parse(document.getText());
+      const symbols = parse.getDocumentSymbolTree();
       resolve(symbols);
     });
   }
 }
 
 async function showNewVersionMessage(context: vscode.ExtensionContext) {
-  // const ID = "shubhamverma18.react-outline";
-  // const VERSION = `${ID}:version`;
-  // const pkgJSON = vscode.extensions.getExtension(ID)?.packageJSON;
+  const ID = "hxdyj.bbl-react-outline";
+  const VERSION = `${ID}:version`;
+  const pkgJSON = vscode.extensions.getExtension(ID)?.packageJSON;
+  if (!pkgJSON) return
 
-  // const oldVersion = context.globalState.get(VERSION);
+  const oldVersion = context.globalState.get(VERSION);
+  const currentVersion = pkgJSON.version;
 
-  // debugger
-  // const currentVersion = pkgJSON.version;
+  if (oldVersion !== currentVersion) {
+    const answer = await vscode.window.showInformationMessage(
+      `React Outline updated to ${currentVersion}!`,
+      "Install Now",
+      "Close"
+    );
 
-  // if (oldVersion !== currentVersion) {
-  //   const answer = await vscode.window.showInformationMessage(
-  //     `React Outline updated to ${currentVersion}!
-  //     It requires your contribution. Head over to the repository and contribute!`,
-  //     "Open Repository",
-  //     "Close"
-  //   );
+    if (answer === "Install Now") {
+      vscode.commands.executeCommand(
+        "vscode.open",
+        vscode.Uri.parse('https://marketplace.visualstudio.com/items?itemName=hxdyj.bbl-react-outline')
+      );
+    }
 
-  //   if (answer === "Open Repository") {
-  //     vscode.commands.executeCommand(
-  //       "vscode.open",
-  //       vscode.Uri.parse(pkgJSON?.repository?.url)
-  //     );
-  //   }
-
-  //   context.globalState.update(VERSION, currentVersion);
-  //   return;
-  // }
+    context.globalState.update(VERSION, currentVersion);
+    return;
+  }
 }
